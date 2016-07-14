@@ -1,6 +1,8 @@
 'use strict';
 // Parent div for running child tests
 let parent = document.body.appendChild(document.createElement('div'));
+let startBtn = document.getElementById('start_btn');
+let itersInput = document.getElementById('iters_input')
 
 // Benchmarks
 let appendNChildren = (n) => {
@@ -9,7 +11,7 @@ let appendNChildren = (n) => {
 		parent.appendChild(document.createElement('div'));
 	}
 	let t2 = performance.now();
-	removeAllChildren();
+	removeAllChildren(parent);
 	return t2 - t1;
 };
 
@@ -18,7 +20,7 @@ let removeNChildren = (n) => {
 		parent.appendChild(document.createElement('div'));
 	}
 	let t1 = performance.now();
-	removeAllChildren();
+	removeAllChildren(parent);
 	let t2 = performance.now();
 	return t2 - t1;
 };
@@ -52,71 +54,88 @@ let lastChildSizeN = (n) => {
 		let t2 = performance.now();
 		totalTime += t2 - t1;
 	}
-	removeAllChildren();
+	removeAllChildren(parent);
 	return totalTime;
 }
 
-const DOM_API_BENCHMARKS = [
+let DOM_API_BENCHMARKS = [
 	{
 		task : 'appendChild',
 		nChildren : 10000,
 		cb : appendNChildren,
-		preAppend : false,
-		skip : true
+		preAppend : false
 	},
 	{
 		task : 'removeChild',
 		nChildren : 10000,
 		cb : removeNChildren,
-		preAppend : false,
-		skip : true
+		preAppend : false
 	},
 	{
 		task : 'nextSibling',
 		nChildren : 100000,
 		cb : iterateThroughChildrenForwards,
-		preAppend : true,
-		skip : false
+		preAppend : true
 	},
 	{
 		task : 'previousSibling',
 		nChildren : 100000,
 		cb : iterateThroughChildrenBackwards,
-		preAppend : true,
-		skip : false
+		preAppend : true
 	},
 	{
 		task : 'lastChild',
 		nChildren : 10000,
 		cb : lastChildSizeN,
-		preAppend : false,
-		skip : true
+		preAppend : false
 	}
 ];
 
+// Create a basic UI to enable/disable benchmarks and set # of iterations
 let generateUI = () => {
-	let itersInput = document.getElementById('iters_input');
 	itersInput.addEventListener('input', (e) => {
-		validInput(itersInput.value);
+		validInput();
 	});
-}
-
-let validInput = (text) => {
-	if (/[^0-9]/g.test(text)) {
-		document.getElementById('startBtn').disabled = true;
-	} else {
-		document.getElementById('startBtn').disabled = false;
+	// Create ui elements for each benchmark
+	for (let bm of DOM_API_BENCHMARKS) {
+		let wrapper = document.createElement('p');
+		let checkbox = document.createElement('input');
+		document.body.insertBefore(wrapper, startBtn);
+		wrapper.innerHTML = 'Benchmark: ' + bm.task;
+		wrapper.appendChild(checkbox);
+		checkbox.type = 'checkbox';
+		checkbox.checked = 'true';
+		bm.run = true;
+		checkbox.onclick = checkBoxEventHandle(bm, checkbox);
 	}
 }
 
-let runBenchmarks = () => {
-	const iterations = parseInt(document.getElementById('iters_input').value);
-	for (let bm of DOM_API_BENCHMARKS) {
-		if (bm.skip) continue;
-		console.log('Running benchmark: ' + bm.task);
+// Wrap in closure so that the correct benchmark and checkbox is used
+let checkBoxEventHandle = (bm, cb) => {
+	return () => {
+		bm.run = cb.checked;
+	}
+}
 
+// Make sure iterations input is a positive integer
+let validInput = () => {
+	if (/[^0-9]/g.test(itersInput.value)) {
+		startBtn.disabled = true;
+	} else {
+		startBtn.disabled = false;
+	}
+}
+
+// Run each enabled benchmark # of iterations times and take an average of the time.
+let runBenchmarks = () => {
+	const iterations = parseInt(itersInput.value);
+	let outputWrapper = document.getElementById('output');
+	removeAllChildren(outputWrapper); // Clear previous output
+
+	for (let bm of DOM_API_BENCHMARKS) {
+		if (!bm.run) continue;
 		// Remove any children left from previous benchmarks.
-		removeAllChildren();
+		removeAllChildren(parent);
 		// Append children for benchmark if needed
 		if (bm.preAppend) {
 			for (let i = 0; i < bm.nChildren; i++) {
@@ -130,14 +149,20 @@ let runBenchmarks = () => {
 			totalTime += bm.cb(bm.nChildren);
 		}
 		totalTime = totalTime / iterations;
-		console.log(bm.task + ' benchmark: ' + totalTime + ' millis.');
+
+		// Output result
+		let resultMsg = bm.task + ' benchmark: ' + totalTime + ' millis.';
+		let newResult = document.createElement('p');
+		newResult.innerHTML = resultMsg;
+		outputWrapper.appendChild(newResult);
+		console.log(resultMsg);
 	}
 };
 
 // Helpers
-let removeAllChildren = () => {
-	while (parent.firstChild) {
-		parent.removeChild(parent.firstChild);
+let removeAllChildren = (p) => {
+	while (p.firstChild) {
+		p.removeChild(p.firstChild);
 	}
 };
 
