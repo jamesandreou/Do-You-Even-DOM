@@ -95,11 +95,22 @@ const DOM_API_BENCHMARKS = [
 ];
 
 let generateUI = () => {
-
+	let itersInput = document.getElementById('iters_input');
+	itersInput.addEventListener('input', (e) => {
+		validInput(itersInput.value);
+	});
 }
 
+let validInput = (text) => {
+	if (/[^0-9]/g.test(text)) {
+		document.getElementById('startBtn').disabled = true;
+	} else {
+		document.getElementById('startBtn').disabled = false;
+	}
+}
 
-let runBenchmarks = (iterations) => {
+let runBenchmarks = () => {
+	const iterations = parseInt(document.getElementById('iters_input').value);
 	for (let bm of DOM_API_BENCHMARKS) {
 		if (bm.skip) continue;
 		console.log('Running benchmark: ' + bm.task);
@@ -131,5 +142,6 @@ let removeAllChildren = () => {
 };
 
 window.onload = () => {
-	//runBenchmarks(1000);
+	generateUI();
+	validInput(document.getElementById('iters_input').value);
 };
