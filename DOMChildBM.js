@@ -240,6 +240,7 @@ let runBenchmarks = () => {
 	let outputWrapper = document.getElementById('output');
 	removeAllChildren(outputWrapper); // Clear previous output
 
+	let startTime = performance.now();
 	for (let bm of DOM_API_BENCHMARKS) {
 		if (!bm.run) continue;
 		// Remove any children left from previous benchmarks.
@@ -259,15 +260,25 @@ let runBenchmarks = () => {
 		totalTime = totalTime / iterations;
 
 		// Output result
-		let resultMsg = bm.task + ' benchmark: ' + totalTime.toFixed(3) + ' ms.';
-		let newResult = document.createElement('p');
-		newResult.innerHTML = resultMsg;
-		outputWrapper.appendChild(newResult);
-		console.log(resultMsg);
+		msgToDOMandConsole(
+			bm.task + ' benchmark: ' + totalTime.toFixed(3) + ' ms.',
+			outputWrapper);
 	}
+	let endTime = performance.now();
+	msgToDOMandConsole(
+		'Benchmarks ran in ' + ((endTime-startTime) / 1000).toFixed(2) + ' seconds.',
+		outputWrapper);
 };
 
 // Helpers
+
+let msgToDOMandConsole = (msg, wrapper) => {
+	let newResult = document.createElement('p');
+	newResult.innerHTML = msg;
+	wrapper.appendChild(newResult);
+	console.log(msg);
+};
+
 let removeAllChildren = (p) => {
 	while (p.firstChild) {
 		p.removeChild(p.firstChild);
