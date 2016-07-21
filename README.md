@@ -23,7 +23,8 @@ https://developer.mozilla.org/en-US/docs/Web/API/NodeList
 - Create NodeList object with 100000 children (childNodes)
 - Iterate forwards through 10000 child NodeList (childNodes[i])
 - Iterate backwards through 100000 child NodeList (childNodes[i])
+- Iterate randomly through 100000 child NodeList (childNodes[i])
 
-### TODO
+## TODO
 - insertBefore
 - replace

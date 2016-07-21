@@ -1,129 +1,150 @@
 'use strict';
 // Parent div for running child tests
-let parent = document.body.appendChild(document.createElement('div'));
-let startBtn = document.getElementById('start_btn');
-let itersInput = document.getElementById('iters_input')
+var parent = document.body.appendChild(document.createElement('div'));
+var startBtn = document.getElementById('start_btn');
+var itersInput = document.getElementById('iters_input')
 
 // Benchmarks
-let appendNChildren = (n) => {
-	let t1 = performance.now();
-	for (let i = 0; i < n; i++) {
+var appendNChildren = function (n) {
+	var t1 = performance.now();
+	for (var i = 0; i < n; i++) {
 		parent.appendChild(document.createElement('div'));
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	removeAllChildren(parent);
 	return t2 - t1;
 };
 
-let removeNChildrenFront = (n) => {
-	for (let i = 0; i < n; i++) {
+var removeNChildrenFront = function(n) {
+	for (var i = 0; i < n; i++) {
 		parent.appendChild(document.createElement('div'));
 	}
-	let t1 = performance.now();
+	var t1 = performance.now();
 	removeAllChildren(parent);
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 };
 
-let removeNChildrenBack = (n) => {
-	for (let i = 0; i < n; i++) {
+var removeNChildrenBack = function(n) {
+	for (var i = 0; i < n; i++) {
 		parent.appendChild(document.createElement('div'));
 	}
-	let t1 = performance.now();
+	var t1 = performance.now();
 	while (parent.lastChild) {
 		parent.removeChild(parent.lastChild);
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 };
 
-let removeNChildrenRandom = (n) => {
-	let children = [];
-	for (let i = 0; i < n; i++) {
-		let child = document.createElement('div');
+var removeNChildrenRandom = function(n) {
+	var children = [];
+	for (var i = 0; i < n; i++) {
+		var child = document.createElement('div');
 		parent.appendChild(child);
 		children.push(child);
 	}
 	// Shuffle list of indices
-	for (let i = 0; i < 100 * children.length; i++) {
-		let r = Math.floor(Math.random() * children.length);
-		let tmp = children[0];
+	for (var i = 0; i < 100 * children.length; i++) {
+		var r = Math.floor(Math.random() * children.length);
+		var tmp = children[0];
 		children[0] = children[r];
 		children[r] = tmp;
 	}
-	let t1 = performance.now();
-	for (let child of children) {
-		parent.removeChild(child);
+	var t1 = performance.now();
+	for (var i = 0; i < children.length; i++) {
+		parent.removeChild(children[i]);
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 };
 
-let iterateThroughChildrenForwards = (n) => {
-	let t1 = performance.now();
-	let child = parent.firstChild;
+var iterateThroughChildrenForwards = function(n) {
+	var t1 = performance.now();
+	var child = parent.firstChild;
 	while (child) {
 		child = child.nextSibling;
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 };
 
-let iterateThroughChildrenBackwards = (n) => {
-	let child = parent.lastChild;
-	let t1 = performance.now();
+var iterateThroughChildrenBackwards = function(n) {
+	var child = parent.lastChild;
+	var t1 = performance.now();
 	while (child) {
 		child = child.previousSibling;
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 };
 
-let lastChildSizeN = (n) => {
-	let totalTime = 0;
-	for (let i = 0; i < n; i++) {
+var lastChildSizeN = function(n) {
+	var totalTime = 0;
+	for (var i = 0; i < n; i++) {
 		parent.appendChild(document.createElement('div'));
-		let t1 = performance.now();
-		let child = parent.lastChild;
-		let t2 = performance.now();
+		var t1 = performance.now();
+		var child = parent.lastChild;
+		var t2 = performance.now();
 		totalTime += t2 - t1;
 	}
 	removeAllChildren(parent);
 	return totalTime;
 }
 
-let createNodeLists = (n) => {
-	for (let i = 0; i < n; i++) {
+var createNodeLists = function(n) {
+	for (var i = 0; i < n; i++) {
 		parent.appendChild(document.createElement('div'));
 	}
-	let t1 = performance.now();
-	let nodeList = parent.childNodes;
-	let t2 = performance.now();
+	var t1 = performance.now();
+	var nodeList = parent.childNodes;
+	var t2 = performance.now();
 	removeAllChildren(parent);
 	return t2 - t1;
 };
 
-let nodeListForwards = (n) => {
-	let nodeList = parent.childNodes;
-	let t1 = performance.now();
-	for (let i = 0; i < nodeList.length; i++) {
-		let child = nodeList[i];
+var nodeListForwards = function(n) {
+	var nodeList = parent.childNodes;
+	var t1 = performance.now();
+	for (var i = 0; i < nodeList.length; i++) {
+		var child = nodeList[i];
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 }
 
-let nodeListBackwards = (n) => {
-	let nodeList = parent.childNodes;
-	let t1 = performance.now();
-	for (let i = nodeList.length; i >= 0; i--) {
-		let child = nodeList[i];
+var nodeListBackwards = function(n) {
+	var nodeList = parent.childNodes;
+	var t1 = performance.now();
+	for (var i = nodeList.length; i >= 0; i--) {
+		var child = nodeList[i];
 	}
-	let t2 = performance.now();
+	var t2 = performance.now();
 	return t2 - t1;
 }
 
-let DOM_API_BENCHMARKS = [
+var nodeListRandom = function(n) {
+	var nodeList = parent.childNodes;
+	var randIndices = [];
+	for (var i = 0; i < nodeList.length; i++) {
+		randIndices.push(i);
+	}
+	for (var i = 0; i < randIndices.length * 100; i++){
+		var r = Math.floor(Math.random() * randIndices.length);
+		var t = randIndices[0];
+		randIndices[0] =  randIndices[r];
+		randIndices[r] = t;
+	}
+
+	var t1 = performance.now();
+	for (var i = 0; i < randIndices.length; i++) {
+		var child = nodeList[randIndices[i]];
+	}
+	var t2 = performance.now();
+	return t2 - t1;
+}
+
+var DOM_API_BENCHMARKS = [
 	{
 		task : 'Append 100 children (appendChild)',
 		nChildren : 100,
@@ -195,19 +216,26 @@ let DOM_API_BENCHMARKS = [
 		nChildren : 100000,
 		cb : nodeListBackwards,
 		preAppend : true
+	},
+	{
+		task : 'Iterate randomly through 100000 child NodeList (childNodes[i])',
+		nChildren : 100000,
+		cb : nodeListRandom,
+		preAppend : true
 	}
 ];
 
 // Create a basic UI to enable/disable benchmarks and set # of iterations
-let generateUI = () => {
-	itersInput.addEventListener('input', (e) => {
+var generateUI = function() {
+	itersInput.addEventListener('input', function(e) {
 		validInput();
 	});
 	itersInput.value = '1000';
 	// Create ui elements for each benchmark
-	for (let bm of DOM_API_BENCHMARKS) {
-		let wrapper = document.createElement('p');
-		let checkbox = document.createElement('input');
+	for (var i = 0; i < DOM_API_BENCHMARKS.length; i++) {
+		var bm = DOM_API_BENCHMARKS[i];
+		var wrapper = document.createElement('p');
+		var checkbox = document.createElement('input');
 		document.body.insertBefore(wrapper, startBtn);
 		wrapper.innerHTML = 'Benchmark: ' + bm.task;
 		wrapper.appendChild(checkbox);
@@ -219,14 +247,14 @@ let generateUI = () => {
 }
 
 // Wrap in closure so that the correct benchmark and checkbox is used
-let checkBoxEventHandle = (bm, cb) => {
-	return () => {
+var checkBoxEventHandle = function(bm, cb) {
+	return function() {
 		bm.run = cb.checked;
-	}
+	};
 }
 
 // Make sure iterations input is a positive integer
-let validInput = () => {
+var validInput = function() {
 	if (/[^0-9]/g.test(itersInput.value)) {
 		startBtn.disabled = true;
 	} else {
@@ -235,26 +263,27 @@ let validInput = () => {
 }
 
 // Run each enabled benchmark # of iterations times and take an average of the time.
-let runBenchmarks = () => {
-	const iterations = parseInt(itersInput.value);
-	let outputWrapper = document.getElementById('output');
+var runBenchmarks = function() {
+	var iterations = parseInt(itersInput.value);
+	var outputWrapper = document.getElementById('output');
 	removeAllChildren(outputWrapper); // Clear previous output
 
-	let startTime = performance.now();
-	for (let bm of DOM_API_BENCHMARKS) {
+	var startTime = performance.now();
+	for (var i = 0; i < DOM_API_BENCHMARKS.length; i++) {
+		var bm = DOM_API_BENCHMARKS[i];
 		if (!bm.run) continue;
 		// Remove any children left from previous benchmarks.
 		removeAllChildren(parent);
 		// Append children for benchmark if needed
 		if (bm.preAppend) {
-			for (let i = 0; i < bm.nChildren; i++) {
+			for (var j = 0; j < bm.nChildren; j++) {
 				parent.appendChild(document.createElement('div'));
 			}
 		}
 
 		// Run benchmarks
-		let totalTime = 0;
-		for (let t = 0; t < iterations; t++) {
+		var totalTime = 0;
+		for (var t = 0; t < iterations; t++) {
 			totalTime += bm.cb(bm.nChildren);
 		}
 		totalTime = totalTime / iterations;
@@ -264,7 +293,7 @@ let runBenchmarks = () => {
 			bm.task + ' benchmark: ' + totalTime.toFixed(3) + ' ms.',
 			outputWrapper);
 	}
-	let endTime = performance.now();
+	var endTime = performance.now();
 	msgToDOMandConsole(
 		'Benchmarks ran in ' + ((endTime-startTime) / 1000).toFixed(2) + ' seconds.',
 		outputWrapper);
@@ -272,20 +301,20 @@ let runBenchmarks = () => {
 
 // Helpers
 
-let msgToDOMandConsole = (msg, wrapper) => {
-	let newResult = document.createElement('p');
+var msgToDOMandConsole = function(msg, wrapper) {
+	var newResult = document.createElement('p');
 	newResult.innerHTML = msg;
 	wrapper.appendChild(newResult);
 	console.log(msg);
 };
 
-let removeAllChildren = (p) => {
+var removeAllChildren = function(p) {
 	while (p.firstChild) {
 		p.removeChild(p.firstChild);
 	}
 };
 
-window.onload = () => {
+window.onload = function() {
 	generateUI();
 	validInput(document.getElementById('iters_input').value);
 };
