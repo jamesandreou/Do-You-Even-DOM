@@ -144,6 +144,17 @@ var nodeListRandom = function(n) {
 	return t2 - t1;
 }
 
+var prependNChildren = function(n) {
+	parent.appendChild(document.createElement('div'));
+	var t1 = performance.now();
+	for (var i = 0; i < n; i++) {
+		parent.insertBefore(document.createElement('div'), parent.firstChild);
+	}
+	var t2 = performance.now();
+	removeAllChildren(parent);
+	return t2 - t1;
+}
+
 var DOM_API_BENCHMARKS = [
 	{
 		task : 'Append 100 children (appendChild)',
@@ -222,6 +233,12 @@ var DOM_API_BENCHMARKS = [
 		nChildren : 100000,
 		cb : nodeListRandom,
 		preAppend : true
+	},
+	{
+		task : 'Prepend 10000 children (insertBefore(child, firstChild))',
+		nChildren : 10000,
+		cb : prependNChildren,
+		preAppend : false
 	}
 ];
 
@@ -230,7 +247,7 @@ var generateUI = function() {
 	itersInput.addEventListener('input', function(e) {
 		validInput();
 	});
-	itersInput.value = '1000';
+	itersInput.value = '1';
 	// Create ui elements for each benchmark
 	for (var i = 0; i < DOM_API_BENCHMARKS.length; i++) {
 		var bm = DOM_API_BENCHMARKS[i];

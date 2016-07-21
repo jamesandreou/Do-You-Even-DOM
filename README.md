@@ -1,4 +1,4 @@
-# DOMNodeChildrenBenchmarks
+# Do You Even DOM?
 Benchmark tests for DOM Node WebAPI focusing on children operations.
 https://developer.mozilla.org/en-US/docs/Web/API/Node
 https://developer.mozilla.org/en-US/docs/Web/API/NodeList
@@ -24,6 +24,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/NodeList
 - Iterate forwards through 10000 child NodeList (childNodes[i])
 - Iterate backwards through 100000 child NodeList (childNodes[i])
 - Iterate randomly through 100000 child NodeList (childNodes[i])
+- Prepend 10000 children (insertBefore(child, firstChild))
 
 ## TODO
 - insertBefore
