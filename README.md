@@ -22,5 +22,5 @@ https://developer.mozilla.org/en-US/docs/Web/API/NodeList
 - Iterate forwards through 10000 child NodeList (childNodes[i])
 - Iterate backwards through 100000 child NodeList (childNodes[i])
 - Prepend 10000 children (insertBefore(child, firstChild))
-- Insert 5000 children in a node of 5000 children (insertBefore(child, child[i]))
-- Replace 5000 children (replaceChild(child, child[i]))
+- Insert 10000 children in a node of 5000 children (insertBefore(child, child[i]))
+- Replace 10000 children (replaceChild(child, child[i]))
